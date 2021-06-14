@@ -1,5 +1,5 @@
 {
-  "name": "Configuration Module",
+  "name": "ConfigurationModule",
   "version": "1.0.0",
   "description": "Election Commission Sri Lanka - LSF  Configuration Management module",
   "main": "server.js",
