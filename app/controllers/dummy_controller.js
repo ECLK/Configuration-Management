@@ -15,6 +15,7 @@ const pollingStation = db.polling_station;
 const partyGen = db.party_gen;
 const provincialCouncilParty = db.provincial_council_party;
 const provincialCouncilIndiGroups = db.provincial_council_indi_groups;
+const provincialCouncilSeats = db.provincial_council_seats;
 
 exports.create = (req, res) => {
 
@@ -95,7 +96,6 @@ exports.create = (req, res) => {
     });
 
     // Create province dummy data
-    // Create iteration dummy data
     const provinces = [
         {
             PROVINCE_ID: 1,
@@ -184,6 +184,33 @@ exports.create = (req, res) => {
 
     adminDistricts.map((admdis, i) => {
         adminDistrict.create(admdis)
+            .then(
+
+            )
+            .catch(
+                err => {
+                    res.status(500).send({
+                        message: err.message || "Error occurs creating of the Itteration Dummy data"
+                    }
+                    )
+                })
+    });
+
+    const pcseats = [
+        {
+            ADS_SEATS: 15,
+            ADMINDISTRICTADMINDISID: 1,
+            ITTERATION_ID: 2
+        },
+        {
+            ADS_SEATS: 10,
+            ADMINDISTRICTADMINDISID: 2,
+            ITTERATION_ID: 2
+        }
+    ]
+
+    pcseats.map((ps, i) => {
+        provincialCouncilSeats.create(ps)
             .then(
 
             )
@@ -513,7 +540,6 @@ const pcps = [
     }
 ]
 
-pollingStation.create(p)
 pcps.map((p, i) => {
     provincialCouncilParty.create(p)
         .then(
@@ -557,7 +583,6 @@ const pcip = [
 
 ]
 
-pollingStation.create(p)
 pcip.map((p, i) => {
     provincialCouncilIndiGroups.create(p)
         .then(
