@@ -2,7 +2,7 @@ module.exports = {
     HOST: "localhost",
     USER: "root",
     PASSWORD: "",
-    DB: "vovoshopdb",
+    DB: "configdb1",
     dialect: "mysql",
     pool: {
       max: 5,
