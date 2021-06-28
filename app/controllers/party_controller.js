@@ -1,6 +1,6 @@
 const db = require('../models');
 const itteration = db.itteration;
-const election =db.election;
+const election = db.election;
 const { QueryTypes } = require('sequelize');
 const sequelize = db.sequelize;
 
@@ -53,5 +53,21 @@ exports.find = (req, res) => {
                 message: err.message || 'Active itteration not found'
             })
         });
+};
+
+exports.findAllNomination = (req, res) => {
+    let q = `SELECT PARTY_NAME_EN as party_name, PARTY_ABBR_EN as party_abbreviation, PARTY_SYMBOL_IN_TEXT_EN as party_symbol_text, PARTY_SYMBOL_URL as party_symbol_image, PARTY_COLOR_EN as color, "RPP" as party_type FROM part_gen
+    WHERE PARTY_STATUS='ACTIVE' UNION SELECT PARTY_NAME_EN as party_name, PARTY_ABBR_EN as party_abbreviation, PARTY_SYMBOL_IN_TEXT_EN as party_symbol_text, PARTY_SYMBOL_URL as party_symbol_image, PARTY_COLOR_EN as color, "RPP" as party_type FROM part_gen
+    WHERE PARTY_STATUS='ACTIVE'`;
+    sequelize.query(q.trim(), { type: QueryTypes.SELECT })
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || 'Active itteration not found'
+            })
+        })
+
 };
 

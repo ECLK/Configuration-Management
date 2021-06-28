@@ -32,6 +32,7 @@ sequelize
   })
 
 // modules related tp nomination
+db.election_gen = require("./election_gen_model")(sequelize, Sequelize);
 db.election = require("./election_model")(sequelize, Sequelize);
 db.itteration = require("./itteration_model")(sequelize, Sequelize);
 db.province = require("./province_model")(sequelize, Sequelize);
@@ -126,6 +127,8 @@ db.support_doc_config = require("./support_doc_config_model")(sequelize, Sequeli
 db.support_doc_config_data = require("./support_doc_config_data_model")(sequelize, Sequelize);
 db.election_module_config = require("./election_module_config_model")(sequelize, Sequelize);
 db.election_module_config_data = require("./election_module_config_data_model")(sequelize, Sequelize);
+db.symbol = require("./symbol_model")(sequelize, Sequelize);
+
 
 //nomination relationship
 db.election_module_approval.hasOne(db.election_module);
@@ -175,5 +178,7 @@ db.eligibility_config_data.belongsTo(db.election_module, {as:'ELECTION_MODULE'})
 db.election_module.hasMany(db.election_module_config_data, {as:'ELECTION_MODULE_CONFIG_DATA'});
 db.election_module_config_data.belongsTo(db.election_module, {as:'ELECTION_MODULE'});
 
+db.election_module.hasMany(db.itteration, {as:'ELECTION_MODULE'});
+db.itteration.belongsTo(db.election_module, {as:'ELECTION_MODULE'});
 
 module.exports = db;

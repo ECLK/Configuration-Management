@@ -26,45 +26,107 @@ exports.find = (req, res) => {
                 })
                     .then(data => {
                         let etype = data.ELECTION_TYPE;
-                        let q=`SELECT province.PROVINCE_NAME_EN, admin_district.ADMIN_DIS_NAME_EN, provincial_council_seats.ADS_SEATS FROM provincial_council_seats INNER JOIN admin_district ON provincial_council_seats.ADMINDISTRICTADMINDISID=admin_district.ADMIN_DIS_ID INNER JOIN electoral_district ON admin_district.ELECTORALDISTRICTEDID=electoral_district.ED_ID INNER JOIN province ON electoral_district.PROVINCEPROVINCEID = province.PROVINCE_ID WHERE provincial_council_seats.ITTERATION_ID=`+iterid;
-                       if (etype == 'PRO') {
+                        let q = `SELECT province.PROVINCE_NAME_EN, admin_district.ADMIN_DIS_NAME_EN, provincial_council_seats.ADS_SEATS FROM provincial_council_seats INNER JOIN admin_district ON provincial_council_seats.ADMINDISTRICTADMINDISID=admin_district.ADMIN_DIS_ID INNER JOIN electoral_district ON admin_district.ELECTORALDISTRICTEDID=electoral_district.ED_ID INNER JOIN province ON electoral_district.PROVINCEPROVINCEID = province.PROVINCE_ID WHERE provincial_council_seats.ITTERATION_ID=` + iterid;
+                        if (etype == 'PRO') {
                             sequelize.query(q.trim(), { type: QueryTypes.SELECT })
-                                .then(data=>{
+                                .then(data => {
                                     console.log(data)
                                     res.send(data);
                                 }
-                                    
-                            )
-                    .catch()
 
+                                )
+                                .catch()
+
+                        } else {
+                            res.status(500).send(
+                                {
+                                    message: err.message || "Election type not found"
+                                }
+                            );
+                        }
+                    })
+                    .catch(err => {
+                        res.status(500).send(
+                            {
+                                message: err.message || "Error retreiving Election with id= " + ittr
+                            }
+                        );
+                    });
             } else {
                 res.status(500).send(
                     {
-                        message: err.message || "Election type not found"
+                        message: err.message || 'Active itteration not found'
                     }
                 );
             }
         })
         .catch(err => {
-            res.status(500).send(
-                {
-                    message: err.message || "Error retreiving Election with id= " + ittr
-                }
-            );
+            res.status(500).send({
+                message: err.message || 'Active itteration not found'
+            })
         });
-} else {
-    res.status(500).send(
+};
+
+exports.findSeatsNomination = (req, res) => {
+    itteration.findAll(
         {
-            message: err.message || 'Active itteration not found'
+            where: {
+                ITERATION_STATUS: true,
+            }
         }
-    );
-}
+    )
+        .then(data => {
+            let eid = 0;
+            let iterid;
+            data.map((x) => {
+                eid = x.ELECTIONELECTIONID;
+                iterid = x.ITERATION_ID;
+            })
+            if (eid > 0) {
+                election.findByPk(eid, {
+                    attributes: ['ELECTION_TYPE']
+                })
+                    .then(data => {
+                        let etype = data.ELECTION_TYPE;
+                        let q = `SELECT admin_district.ADMIN_DIS_NAME_EN as division_name, province.PROVINCE_NAME_EN as parent_division_name, admin_district.ADMIN_DIS_ID as division_code, provincial_council_seats.ADS_SEATS as no_of_candidate FROM provincial_council_seats INNER JOIN admin_district ON provincial_council_seats.ADMINDISTRICTADMINDISID=admin_district.ADMIN_DIS_ID INNER JOIN electoral_district ON admin_district.ELECTORALDISTRICTEDID=electoral_district.ED_ID INNER JOIN province ON electoral_district.PROVINCEPROVINCEID = province.PROVINCE_ID WHERE provincial_council_seats.ITTERATION_ID=` + iterid;
+                        if (etype == 'PRO') {
+                            sequelize.query(q.trim(), { type: QueryTypes.SELECT })
+                                .then(data => {
+                                    const r = [{"division_common_name": "Administrative District",data}]
+                                    //console.log(data)
+                                    res.send(r);
+                                }
+
+                                )
+                                .catch()
+                        } else {
+                            res.status(500).send(
+                                {
+                                    message: err.message || "Election type not found"
+                                }
+                            );
+                        }
+                    })
+                    .catch(err => {
+                        res.status(500).send(
+                            {
+                                message: err.message || "Error retreiving Election with id= " + ittr
+                            }
+                        );
+                    });
+            } else {
+                res.status(500).send(
+                    {
+                        message: err.message || 'Active itteration not found'
+                    }
+                );
+            }
         })
-        .catch (err => {
-    res.status(500).send({
-        message: err.message || 'Active itteration not found'
-    })
-});
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || 'Active itteration not found'
+            })
+        });
 };
 
 exports.create = (req, res) => {
@@ -94,7 +156,5 @@ exports.create = (req, res) => {
                 message: err.message || "Error occurs creating the Election"
             });
         });
-
-
-
 };
+

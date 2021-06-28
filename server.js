@@ -8,13 +8,15 @@ const seat = require('./app/routes/seats');
 const countingcenter = require('./app/routes/countingcenter');
 const party = require('./app/routes/party');
 const dummy = require('./app/routes/dummy');
+const candidateconfig = require('./app/routes/candidateconfig');
+const electiontemplate = require('./app/routes/electiontemplate');
 const app = express();
 
 var corsOptions = {
   origin: "http://localhost:3000/"
 };
 
-db.sequelize.sync({ force: true})
+db.sequelize.sync({ force: false})
   .then(() => {
     console.log(`Database & tables created!`);
   });
@@ -30,6 +32,9 @@ app.use('/seat', seat);
 app.use('/postalcc', countingcenter);
 app.use('/party', party);
 app.use('/dummy', dummy);
+app.use('/candidateconfig', candidateconfig);
+app.use('/electiontemplate',electiontemplate)
+
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
