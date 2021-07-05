@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const redis = require('redis');
 const db = require("./app/models");
 const bodyParser = require("body-parser");
 const election = require('./app/routes/election');
@@ -10,13 +11,15 @@ const party = require('./app/routes/party');
 const dummy = require('./app/routes/dummy');
 const candidateconfig = require('./app/routes/candidateconfig');
 const electiontemplate = require('./app/routes/electiontemplate');
+const auth = require('./app/routes/auth.router');
+
 const app = express();
 
 var corsOptions = {
   origin: "http://localhost:3000/"
 };
 
-db.sequelize.sync({ force: false})
+db.sequelize.sync({ force: true})
   .then(() => {
     console.log(`Database & tables created!`);
   });
@@ -26,6 +29,7 @@ db.sequelize.sync({ force: false})
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use('/auth', auth);
 app.use('/election', election);
 app.use('/pollingstation', pollingstation);
 app.use('/seat', seat);

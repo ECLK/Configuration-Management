@@ -128,6 +128,7 @@ db.support_doc_config_data = require("./support_doc_config_data_model")(sequeliz
 db.election_module_config = require("./election_module_config_model")(sequelize, Sequelize);
 db.election_module_config_data = require("./election_module_config_data_model")(sequelize, Sequelize);
 db.symbol = require("./symbol_model")(sequelize, Sequelize);
+db.user = require("./user.model")(sequelize, Sequelize);
 
 
 //nomination relationship
