@@ -22,7 +22,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.DOCKER_PASSWORD_E8EBD09C_D45F_4ABC_91AC_4DCC9B515FCF }}
       - name: Build the Docker image
-        run: docker build --tag ${SERVICE_NAME}:${{steps.event-version.outputs.SOURCE_TAG }} --build-arg DB_HOST=${{secrets.DEV_DB_HOST}} --build-arg DB_USER=${{secrets.DEV_DB_USER}} --build-arg DB_PASSWORD=${{secrets.DEV_DB_PASSWORD}} --build-arg DB_NAME=${{secrets.DEV_DB_NAME}} --build-arg DB_DIALECT=${{secrets.DEV_DB_DIALECT}} --file Dockerfile .
+        run: docker build --tag ${SERVICE_NAME}:${{steps.event-version.outputs.SOURCE_TAG }} --file Dockerfile .
       - name: GitHub Image Push
         run: docker push $SERVICE_NAME:${{steps.event-version.outputs.SOURCE_TAG }}
       - name: Platformer Deploy
