@@ -14,7 +14,7 @@ exports.findCandidateConfig = (req, res) => {
                 emid = x.ID;
             })
             if (emid > 0) {
-                let q = `SELECT candidate_config_data.CANDIDATE_CONFIG_NAME FROM election_module INNER JOIN candidate_config ON election_module.ID = candidate_config.ELECTIONMODULEID INNER JOIN candidate_config_data ON candidate_config.ID=candidate_config_data.CANDIDATECONFIGID WHERE election_module.ID=`+emid;
+                let q = `SELECT candidate_config.KEY_NAME as candidateConfigName FROM candidate_config INNER JOIN candidate_config_data ON candidate_config.ID=candidate_config_data.CANDIDATECONFIGID WHERE candidate_config_data.ELECTIONMODULEID=`+emid;
                 sequelize.query(q.trim(), { type: QueryTypes.SELECT })
                     .then(data => {
                         res.send(data);
@@ -47,7 +47,7 @@ exports.findSupportDocument = (req, res) => {
                 emid = x.ID;
             })
             if (emid > 0) {
-                let q = `SELECT support_doc_config.KEY_NAME as supportDocConfigName FROM election_module INNER JOIN support_doc_config ON election_module.ID = support_doc_config.ELECTIONMODULEID WHERE election_module.ID=`+emid;
+                let q = `SELECT support_doc_config.KEY_NAME as supportDocConfigName FROM support_doc_config INNER JOIN support_doc_config_data ON support_doc_config.ID = support_doc_config_data.SUPPORTDOCCONFIGID WHERE support_doc_config_data.ELECTIONMODULEID=`+emid;
                 sequelize.query(q.trim(), { type: QueryTypes.SELECT })
                     .then(data => {
                         res.send(data);

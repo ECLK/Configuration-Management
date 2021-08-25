@@ -27,14 +27,14 @@ exports.findElectionTemplate = (req, res) => {
             })
             if (emid > 0) {
                 // select candidate config data
-                let q2 = `SELECT candidate_config_data.CANDIDATE_CONFIG_NAME as candidateConfigName FROM election_module INNER JOIN candidate_config ON election_module.ID = candidate_config.ELECTIONMODULEID INNER JOIN candidate_config_data ON candidate_config.ID=candidate_config_data.CANDIDATECONFIGID WHERE election_module.ID=` + emid;
+                let q2 = `SELECT candidate_config.KEY_NAME as candidateConfigName FROM candidate_config INNER JOIN candidate_config_data ON candidate_config.ID=candidate_config_data.CANDIDATECONFIGID WHERE candidate_config_data.ELECTIONMODULEID=` + emid;
                 sequelize.query(q2.trim(), { type: QueryTypes.SELECT })
                     .then(data => {
                         //res.send(data);
                         allElectionTemplateData.candidateFormConfiguration = data
 
                         // select supporting documents
-                        let q3 = `SELECT support_doc_config.KEY_NAME as supportDocConfigName FROM election_module INNER JOIN support_doc_config ON election_module.ID = support_doc_config.ELECTIONMODULEID WHERE election_module.ID=` + emid;
+                        let q3 = `SELECT support_doc_config.KEY_NAME as supportDocConfigName FROM support_doc_config INNER JOIN support_doc_config_data ON support_doc_config.ID = support_doc_config_data.SUPPORTDOCCONFIGID WHERE support_doc_config_data.ELECTIONMODULEID=` + emid;
                         sequelize.query(q3.trim(), { type: QueryTypes.SELECT })
                             .then(data => {
                                 allElectionTemplateData.supportingDocuments = data
@@ -66,13 +66,13 @@ exports.findElectionTemplate = (req, res) => {
                                                                 allElectionTemplateData.divisionConfig = data
 
                                                                 // electionConfig
-                                                                let q5 = `SELECT election_module_config.KEY_NAME AS electionModuleConfigName, election_module_config_data.VALUE AS value FROM election_module INNER JOIN election_module_config ON election_module.ID = election_module_config.ELECTIONMODULEID INNER JOIN election_module_config_data ON election_module_config.ID=election_module_config_data.ELECTIONMODULECONFIGID WHERE election_module.ID=` + emid;
+                                                                let q5 = `SELECT election_module_config.KEY_NAME AS electionModuleConfigName, election_module_config_data.VALUE AS value FROM election_module_config INNER JOIN election_module_config_data ON election_module_config.ID = election_module_config_data.ELECTIONMODULECONFIGID WHERE election_module_config_data.ELECTIONMODULEID=` + emid;
                                                                 sequelize.query(q5.trim(), { type: QueryTypes.SELECT })
                                                                     .then(data => {
                                                                         allElectionTemplateData.electionConfig = data
 
                                                                         // eligibilityCheckList
-                                                                        let q6 = `SELECT eligibility_config.DESCRIPTION AS eligibilityConfigName FROM election_module INNER JOIN eligibility_config ON election_module.ID = eligibility_config.ELECTIONMODULEID WHERE election_module.ID=` + emid;
+                                                                        let q6 = `SELECT eligibility_config.DESCRIPTION AS eligibilityConfigName FROM eligibility_config INNER JOIN eligibility_config_data ON eligibility_config.ID = eligibility_config_data.ELECTIONMODULEID WHERE eligibility_config_data.ELECTIONMODULEID=` + emid;
                                                                         sequelize.query(q6.trim(), { type: QueryTypes.SELECT })
                                                                             .then(data => {
                                                                                 allElectionTemplateData.eligibilityCheckList = data
